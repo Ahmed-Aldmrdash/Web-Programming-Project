@@ -23,6 +23,7 @@ A dynamic, responsive weather application that fetches real-time weather conditi
 5. Open the project in your browser to view the frontend or navigate to the live deployment link.
 
 ---
-*Developed by Ahmed Mohamed Fathy Aldmrdash (ID: 240102791)*
-And Omar Ahmed Ramadan Ramadan (ID: 240102684)*
-And Shimaa Hussien (ID: 240102170)*
+## Developers
+* **Ahmed Mohamed Fathy Aldmrdash** (ID: 240102791)
+* **Omar Ahmed Ramadan Ramadan** (ID: 240102684)
+* **Shimaa Hussien** (ID: 240102170)
