@@ -230,7 +230,7 @@ const saveCityToHistory = async (city) => {
     }
 };
 
-// 8. PHP Integration: Fetch history and display Latest on Top
+// 8. PHP Integration: Fetch history and display strictly as received from server
 const updateSidebar = async () => {
     try {
         const response = await fetch('api/get_history.php');
@@ -239,18 +239,23 @@ const updateSidebar = async () => {
         const history = await response.json();
         const sidebarContainer = document.getElementById('saved-cities');
         
-        if (sidebarContainer && history && history.length > 0) {
-            // Reverse the array so the most recently saved city appears at the top
-            const latestHistory = history.reverse();
+        if (sidebarContainer) {
+            // If history is empty, show a fallback message
+            if (history.length === 0) {
+                sidebarContainer.innerHTML = '<p style="color: var(--text-dim); font-size: 0.8rem; padding: 10px;">No recent searches</p>';
+                return;
+            }
 
-            sidebarContainer.innerHTML = latestHistory.map(item => `
-                <div class="saved-city" onclick="fetchWeatherData('${item.city_name}')">
+            // Display cities exactly in the order they come from the DB (Latest ID First)
+            // Added saveCityToHistory inside onclick to push the city to the top when clicked
+            sidebarContainer.innerHTML = history.map(item => `
+                <div class="saved-city" onclick="fetchWeatherData('${item.city_name}'); saveCityToHistory('${item.city_name}');">
                     ${item.city_name}
                 </div>
             `).join('');
         }
     } catch (error) {
-        console.warn("UI Error: Could not refresh sidebar. Make sure PHP is running.");
+        console.warn("UI Error: Could not refresh sidebar. Check PHP connection.");
     }
 };
 
