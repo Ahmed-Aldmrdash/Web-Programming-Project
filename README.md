@@ -1,76 +1,101 @@
-# 🌤️ Modern Weather Dashboard - SUT Project
+🌤️ Modern Weather Dashboard - SUT Project (Pro Edition)
+📌 1. Project Overview (نظرة عامة على المشروع)
+مشروع Modern Weather Dashboard هو تطبيق ويب تفاعلي متكامل (Full-Stack Web Application) بمستوى احترافي. يهدف التطبيق إلى تقديم معلومات دقيقة ولحظية عن حالة الطقس لأي مدينة أو بقعة جغرافية حول العالم. يتميز التطبيق بواجهة مستخدم زجاجية عصرية (Glassmorphism)، وخرائط تفاعلية، وخلفيات تتغير ديناميكياً بناءً على حالة الطقس، بالإضافة إلى نظام ذكي لحفظ سجل البحث (Search History) في قاعدة بيانات فعلية على خادم (Live Server)، مما يسهل وصول المستخدم للمدن التي يهتم بها.
 
-## 📌 1. Project Overview
-The **Modern Weather Dashboard** is a fully integrated Full-Stack Web Application designed to provide accurate, real-time weather information for any city worldwide. The application displays current weather conditions and a 5-day forecast, featuring a smart search history system stored in a local database to help users quickly access their most searched locations.
+👥 2. Team Members & Roles (فريق العمل وتوزيع المهام)
+تم تطوير هذا المشروع كعمل جماعي لطلاب جامعة السويدي للتكنولوجيا (SUT)، وتم توزيع المهام باحترافية كالتالي:
 
----
+👑 Ahmed Aldmrdash (Team Leader & AI Engineer):
 
-## 👥 2. Team Members & Roles
-This project was developed collaboratively by students of **Elsewedy University of Technology (SUT)**, with tasks distributed as follows:
+إدارة المشروع والتنسيق بين أعضاء الفريق ورفع الملفات على (GitHub).
 
-* 👑 **Ahmed Aldmrdash (Team Leader & AI Engineer):**
-  * Project management and team coordination via GitHub Version Control.
-  * UI/UX design and core layout implementation (HTML/CSS).
-  * Developed the Dark/Light Mode logic and state management.
-  * Mapped local, high-quality weather icons to corresponding weather conditions.
-* 👨‍💻 **Omar Ahmed Ramadan (Frontend & API Integrator):**
-  * Handled DOM Manipulation to dynamically display data on the user interface.
-  * Integrated the External API (OpenWeatherMap) using `async/await` and `Fetch API`.
-  * Extracted and processed the 5-day forecast data, calculating true daily maximum and minimum temperatures.
-* 👩‍💻 **Shimaa Hussien (Backend & Database Administrator):**
-  * Designed and built the MySQL database architecture.
-  * Programmed the backend PHP scripts (`save_city.php` and `get_history.php`).
-  * Managed data persistence operations, implementing a custom "Latest on Top" logic for recent searches.
+تصميم واجهة المستخدم (UI/UX) وبناء الهيكل الأساسي (HTML/CSS) وتطبيق الـ Glassmorphism.
 
----
+برمجة المميزات المتقدمة (Bonuses): دمج الخرائط التفاعلية (Leaflet.js)، نظام التنبيهات والنصائح الذكية (SweetAlert2)، والخلفيات الديناميكية (Real-life Images).
 
-## 🛠️ 3. Technologies Used
-* **Frontend:** HTML5, CSS3 (Custom Variables, Flexbox, Grid), Vanilla JavaScript (ES6+).
-* **Backend:** PHP 8.x.
-* **Database:** MySQL (via XAMPP Control Panel).
-* **Version Control:** Git & GitHub.
-* **External API:** OpenWeatherMap API.
+رفع الموقع وقاعدة البيانات على استضافة حقيقية (InfinityFree Deployment).
 
----
+👨‍💻 Omar Ahmed Ramadan (Frontend & API Integrator):
 
-## 📡 4. API Details & Integration
-We relied on the OpenWeatherMap API as a robust and free source for meteorological data.
+التعامل مع الـ DOM Manipulation لعرض البيانات في الواجهة بشكل ديناميكي.
 
-* **Endpoints Used:**
-  1. **Current Weather:** `https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={API_KEY}`
-  2. **5-Day Forecast:** `https://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={API_KEY}`
-* **Programmatic Handling:**
-  We utilized the JavaScript `Fetch API` alongside `Promise.all` to perform parallel data fetching for both current conditions and forecasts. This approach significantly reduces load times. We also implemented comprehensive `try...catch` blocks to gracefully handle errors, such as invalid city name inputs.
+الربط مع الـ External API (OpenWeatherMap) باستخدام async/await و fetch.
 
----
+استخراج ومعالجة بيانات الـ 5 أيام، والتعامل مع الإحداثيات (Latitude & Longitude) لربطها بالخريطة.
 
-## ⚙️ 5. Project Features & Core Logic
-The application incorporates several advanced logic concepts and features:
+👩‍💻 Shimaa Hussien (Backend & Database Administrator):
 
-1. **Smart Icon Mapping:** We bypassed the default API icons, creating a custom `getWeatherIcon()` function. This algorithm maps weather description keywords (e.g., "rain", "clear", "clouds") to a local directory of high-quality images, ensuring a premium UI.
-2. **Data Aggregation Algorithm:** The API returns 40 data points (every 3 hours over 5 days). We engineered a JavaScript algorithm to aggregate these points, extracting the true daily maximum temperature, minimum temperature, and noon weather condition to display in clean cards and a detailed table.
-3. **Persistent Dark/Light Mode:** Integrated a theme toggler that saves the user's preference in the browser's `localStorage`, ensuring the selected theme persists across page reloads.
-4. **Auto-Sorting Smart History:** When a city is searched, it is saved to the database. If an existing city is searched again (or clicked from the sidebar), the backend deletes the old record and re-inserts it as a new query. This guarantees that the most recently interacted-with cities always float to the top of the list (Latest on Top).
+تصميم وإنشاء قاعدة البيانات MySQL على البيئة المحلية (XAMPP) ثم نقلها لخادم الإنتاج (Production Server).
 
----
+برمجة ملفات الـ PHP (save_city.php و get_history.php).
 
-## 🗄️ 6. Database Architecture
-We utilized the XAMPP environment to host our local server (Apache/MySQL).
+إدارة عمليات الحفظ والاسترجاع، وتطبيق خوارزمية (Latest on Top) لعرض أحدث عمليات البحث ومنع تكرار البيانات.
 
-* **Database Name:** `weather_app`
-* **Main Table:** `search_history`
-* **Schema Columns:**
-  * `id`: INT (Primary Key, Auto Increment).
-  * `city_name`: VARCHAR(255) (Stores the requested city).
-  * `search_date`: TIMESTAMP (Automatically records the time of the query).
+🛠️ 3. Technologies Used (التقنيات المستخدمة)
+Frontend: HTML5, CSS3 (Custom Variables, Flexbox, Grid, Glassmorphism), Vanilla JavaScript (ES6+).
 
-**Integration Flow:**
-The frontend JS sends a POST request containing the city name to `save_city.php`. The PHP script executes an SQL query to remove any duplicate records before inserting the new entry, effectively updating its timestamp and ID. The JS then immediately fetches data from `get_history.php` to dynamically update the sidebar UI without requiring a page refresh.
+External Libraries: * Leaflet.js: لبرمجة الخرائط التفاعلية.
 
----
+SweetAlert2: لنظام التنبيهات المظهري والإشعارات الذكية.
 
-## 🐙 7. GitHub Workflow
-To maintain a professional and trackable development environment, Git and GitHub were strictly utilized:
-1. **Repository Creation:** A central repository was established for version control.
-2. **Task Distribution:** A `TASK_DISTRIBUTION.md` file was maintained to document individual responsibilities clearly.
-3. **Staged Commits:** Code was pushed in logical stages (Initial boilerplate, API integration updates, Backend/DB linking, and final Bug Fixes).
+Backend: PHP 8.x.
+
+Database: MySQL (Cloud Hosted).
+
+Version Control: Git & GitHub.
+
+Hosting & Deployment: InfinityFree (Live Server).
+
+API: OpenWeatherMap API (Weather & Geocoding).
+
+📡 4. The API Details (تفاصيل الـ API وكيفية استخدامه)
+اعتمدنا في المشروع على OpenWeatherMap API كمصدر موثوق لبيانات الطقس.
+
+الـ Endpoints المستخدمة:
+
+Current Weather (By City): weather?q={city} (لجلب طقس اليوم الحالي بالاسم).
+
+Current Weather (By Coordinates): weather?lat={lat}&lon={lon} (لجلب الطقس عند الضغط على أي نقطة في الخريطة أو عند تحديد موقع المستخدم).
+
+5-Day Forecast: forecast?q={city} (لجلب توقعات الأيام الخمسة القادمة بفاصل 3 ساعات).
+
+آلية المعالجة:
+تم استخدام الـ Fetch API في الجافاسكريبت مع Promise.all لجلب بيانات الطقس الحالي والتوقعات بشكل متوازٍ (Parallel Fetching) لتقليل وقت التحميل، مع دمج مؤشرات تحميل (Loaders) من SweetAlert لضمان تجربة مستخدم سلسة.
+
+⚙️ 5. Advanced Project Features & Logic (المميزات المتقدمة ومنطق العمل)
+تم تنفيذ عدة أفكار برمجية (Logic) احترافية تجعل التطبيق يتفوق على المشاريع التقليدية:
+
+Auto-Detect Location (الربط الجغرافي الذكي): عند فتح التطبيق، يتم استخدام navigator.geolocation للتعرف على موقع المستخدم تلقائياً، وجلب طقس مدينته فوراً دون الحاجة للبحث.
+
+Interactive Map "Click to Explore" (الخريطة التفاعلية): تم دمج مكتبة Leaflet.js لعرض خريطة تفاعلية تطير (FlyTo Animation) للمدينة المبحوث عنها. الأهم من ذلك، يمكن للمستخدم الضغط على أي نقطة في العالم على الخريطة، وسيقوم الموقع تلقائياً بجلب إحداثياتها وعرض طقسها وتحديث الواجهة بالكامل.
+
+Dynamic Real-Life Backgrounds (الخلفيات الحية الديناميكية): يتم تحليل حالة الطقس القادمة من الـ API (مثل: clear, rain, snow, mist) وتغيير خلفية الموقع بالكامل لصور حقيقية عالية الجودة. مع معالجة الحالات النادرة (Edge Cases) كالأعاصير والغبار، وإضافة طبقات شفافة (CSS Overlays) تتغير كثافتها حسب وضع الإضاءة لضمان وضوح النصوص.
+
+Smart AI-like Advice (النصيحة الذكية): استخدام SweetAlert2 لإظهار إشعار ذكي (Toast Notification) يستمر لمدة 10 ثوانٍ يحلل الطقس ويعطي نصيحة للمستخدم (مثال: "الجو ممطر، لا تنسَ مظلتك!" أو "الجو حار، اشرب الكثير من الماء").
+
+Dark/Light Mode Toggle: ميزة تغيير المظهر مع تغيير ألوان النصوص والطبقات الزجاجية والخلفيات لتناسب راحة العين، مع حفظ الخيار في localStorage.
+
+Auto-Sorting History (ترتيب السجل ذكياً): عند البحث، يتم حفظ المدينة في قاعدة البيانات. إذا تم تكرار البحث، يقوم السيرفر بحذف السجل القديم وإدراجه كأحدث بحث (Latest on Top) ليظهر دائماً في أعلى القائمة الجانبية.
+
+🗄️ 6. Database Architecture & Deployment (قاعدة البيانات والاستضافة)
+تم ترقية المشروع من بيئة XAMPP المحلية إلى خادم إنتاج حقيقي (Production Server) لتسهيل الوصول إليه.
+
+اسم قاعدة البيانات: weather_app (على استضافة InfinityFree).
+
+الجدول الأساسي: search_history
+
+id: INT (Primary Key, Auto Increment).
+
+city_name: VARCHAR(255) (لحفظ اسم المدينة).
+
+search_date: TIMESTAMP (يسجل وقت البحث تلقائياً لضبط الترتيب).
+
+طريقة الربط (Client-Server Communication):
+يقوم الـ Frontend بإرسال طلب POST إلى api/save_city.php لتخزين المدينة. ثم يقوم بطلب api/get_history.php لجلب السجل المحدث وعرضه مباشرة بدون إعادة تحميل الصفحة (AJAX-like behavior).
+
+🐙 7. GitHub Workflow & Live Deployment (دورة العمل والاستضافة)
+لضمان بيئة عمل هندسية صحيحة، تم اتباع الخطوات التالية:
+
+Version Control: تم إنشاء مستودع (Repository) على GitHub لتتبع جميع التغييرات، مع رسائل Commit واضحة لكل ميزة تمت إضافتها (مثل: Added Leaflet Map, Integrated SweetAlert2).
+
+Live Deployment: تم رفع ملفات المشروع بالكامل (HTML, CSS, JS, PHP) وقاعدة البيانات (MySQL) على استضافة InfinityFree المجانية، وتكوين ملف الاتصال db.php للربط بالسيرفر السحابي، ليصبح المشروع متاحاً للعرض والمناقشة الأكاديمية عبر رابط (URL) مباشر وحقيقي.
