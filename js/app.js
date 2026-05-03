@@ -74,7 +74,7 @@ const updateBackground = (condition) => {
     }
 };
 
-// 3. BONUS FEATURE 3: Interactive Map (Leaflet.js)
+// 3. BONUS FEATURE 3: Interactive Map with "Click to Explore" Feature
 let map;
 let marker;
 
@@ -84,6 +84,35 @@ const updateMap = (lat, lon, temp, city) => {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
+
+        // --- NEW: Add click listener to the map ---
+        map.on('click', async (e) => {
+            const { lat, lng } = e.latlng;
+            
+            // Show a small loading indicator
+            if(typeof Swal !== 'undefined') Swal.showLoading();
+
+            try {
+                // Fetch weather by coordinates (Lat/Lon)
+                const response = await fetch(`${BASE_URL}/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`);
+                const data = await response.json();
+
+                if (data && data.name) {
+                    // Update UI with the new clicked location's weather
+                    displayCurrentWeather(data);
+                    // Update Sidebar and Database
+                    saveCityToHistory(data.name);
+
+                    // Fetch and display forecast for this new location
+                    const forecastRes = await fetch(`${BASE_URL}/forecast?q=${data.name}&units=metric&appid=${API_KEY}`);
+                    const forecastData = await forecastRes.json();
+                    displayForecast(forecastData);
+                }
+                if(typeof Swal !== 'undefined') Swal.close();
+            } catch (err) {
+                if(typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Error', text: 'Could not fetch weather for this point.' });
+            }
+        });
     } else {
         map.flyTo([lat, lon], 10, {
             animate: true,
@@ -114,14 +143,18 @@ const fetchWeatherData = async (city) => {
 
         if (!currentRes.ok || !forecastRes.ok) {
             // SweetAlert2 Error Notification
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'City not found. Please check the spelling!',
-                confirmButtonColor: '#38bdf8',
-                background: document.body.classList.contains('light-mode') ? '#fff' : '#1e293b',
-                color: document.body.classList.contains('light-mode') ? '#0f172a' : '#f8fafc'
-            });
+            if(typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'City not found. Please check the spelling!',
+                    confirmButtonColor: '#38bdf8',
+                    background: document.body.classList.contains('light-mode') ? '#fff' : '#1e293b',
+                    color: document.body.classList.contains('light-mode') ? '#0f172a' : '#f8fafc'
+                });
+            } else {
+                alert("City not found. Please check the spelling.");
+            }
             return false;
         }
 
@@ -194,22 +227,24 @@ const displayCurrentWeather = (data) => {
     }
 
     // Show sleek toast notification (10 seconds with Close Button)
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        showCloseButton: true,
-        timer: 10000,
-        timerProgressBar: true,
-        background: document.body.classList.contains('light-mode') ? '#fff' : '#1e293b',
-        color: document.body.classList.contains('light-mode') ? '#0f172a' : '#f8fafc'
-    });
+    if(typeof Swal !== 'undefined') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            showCloseButton: true,
+            timer: 10000,
+            timerProgressBar: true,
+            background: document.body.classList.contains('light-mode') ? '#fff' : '#1e293b',
+            color: document.body.classList.contains('light-mode') ? '#0f172a' : '#f8fafc'
+        });
 
-    Toast.fire({
-        icon: adviceIcon,
-        title: `${data.name} Weather`,
-        text: advice
-    });
+        Toast.fire({
+            icon: adviceIcon,
+            title: `${data.name} Weather`,
+            text: advice
+        });
+    }
 };
 
 // 6. Array Methods: Display 5-day forecast
