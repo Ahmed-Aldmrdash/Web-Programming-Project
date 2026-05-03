@@ -1,13 +1,13 @@
 // =========================================================
 // Modern Weather Dashboard - JavaScript Logic
-// Team Member: Omar Ahmed Ramadan (API & DOM) & Ahmed (Leader)
+// Team Members: Omar Ahmed Ramadan (API & DOM), Shimaa Hussien (DB) & Ahmed Aldmrdash (Leader)
 // =========================================================
 
 // Configuration
 const API_KEY = 'dc6995fce2cbfe9781f339cb5d7a2288';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
-// 1. Local Icons Mapping: المارسينج الشامل لكل الصور اللي بعتها
+// 1. Local Icons Mapping: Link weather conditions to local images
 function getWeatherIcon(condition) {
     const desc = condition.toLowerCase();
     const path = "images/"; 
@@ -32,10 +32,11 @@ function getWeatherIcon(condition) {
     if (desc.includes("sand")) return `${path}Sand.png`;
     if (desc.includes("smoke")) return `${path}Smoke.png`;
 
+    // Default icon if no match is found
     return `${path}icon.png`; 
 }
 
-// 2. Event Handling: معالجة البحث ومنع إعادة التحميل
+// 2. Event Handling: Handle search form submission and prevent page reload
 document.getElementById('search-form').addEventListener('submit', async (e) => {
     e.preventDefault(); 
     
@@ -45,13 +46,13 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     if (city) {
         const isSuccess = await fetchWeatherData(city);
         if (isSuccess) {
-            saveCityToHistory(city); 
+            await saveCityToHistory(city); // Wait for the city to be saved
         }
-        cityInput.value = ''; 
+        cityInput.value = ''; // Clear search input
     }
 });
 
-// 3. Fetch API (async/await): جلب البيانات مع تأمين الأخطاء
+// 3. Fetch API (async/await): Fetch weather data with error handling
 const fetchWeatherData = async (city) => {
     try {
         const [currentRes, forecastRes] = await Promise.all([
@@ -67,6 +68,7 @@ const fetchWeatherData = async (city) => {
         const currentData = await currentRes.json();
         const forecastData = await forecastRes.json();
 
+        // Update UI
         displayCurrentWeather(currentData);
         displayForecast(forecastData);
         
@@ -77,12 +79,12 @@ const fetchWeatherData = async (city) => {
     }
 };
 
-// 4. DOM Manipulation: عرض الطقس الحالي
+// 4. DOM Manipulation: Display current weather (with full country name)
 const displayCurrentWeather = (data) => {
     const weatherSection = document.getElementById('current-weather');
-    // تم تعديل المسمى ليتوافق مع الدالة بالأعلى
     const iconUrl = getWeatherIcon(data.weather[0]?.description || '');
     
+    // Attempt to get the full country name
     let fullCountryName = data.sys.country;
     try {
         const regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
@@ -105,7 +107,7 @@ const displayCurrentWeather = (data) => {
     `;
 };
 
-// 5. Array Methods: عرض التوقعات
+// 5. Array Methods: Display 5-day forecast (calculating true daily max/min)
 const displayForecast = (data) => {
     const forecastContainer = document.getElementById('forecast-cards');
     const forecastSection = document.querySelector('.forecast-section');
@@ -113,6 +115,7 @@ const displayForecast = (data) => {
 
     forecastContainer.innerHTML = ''; 
 
+    // Aggregate daily data to find highest and lowest temperatures
     const dailyForecasts = {};
     
     data.list.forEach(item => {
@@ -132,14 +135,17 @@ const displayForecast = (data) => {
             if (item.main.temp_min < dailyForecasts[dateStr].temp_min) {
                 dailyForecasts[dateStr].temp_min = item.main.temp_min;
             }
+            // Capture weather condition around noon
             if (item.dt_txt.includes("12:00:00")) {
                 dailyForecasts[dateStr].weather = item.weather;
             }
         }
     });
 
+    // Convert object to array and take the first 5 days
     const dailyData = Object.values(dailyForecasts).slice(0, 5);
 
+    // Build forecast cards
     dailyData.forEach(day => {
         const date = new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' });
         const iconUrl = getWeatherIcon(day.weather[0]?.description || '');
@@ -159,10 +165,11 @@ const displayForecast = (data) => {
         forecastContainer.appendChild(card);
     });
 
+    // Render detailed table
     renderForecastTable(dailyData, forecastSection || forecastContainer.parentElement);
 };
 
-// 6. HTML Table Requirement: رسم جدول الحرارة 
+// 6. HTML Table Requirement: Render forecast table
 const renderForecastTable = (dailyData, container) => {
     if (!container) return; 
 
@@ -206,21 +213,24 @@ const renderForecastTable = (dailyData, container) => {
     container.appendChild(table);
 };
 
-// 7. PHP Integration: حفظ مدينة جديدة
+// 7. PHP Integration: Save new city to database (Wait for success)
 const saveCityToHistory = async (city) => {
     try {
-        await fetch('api/save_city.php', {
+        const response = await fetch('api/save_city.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `city=${encodeURIComponent(city)}`
         });
-        updateSidebar(); 
+        
+        if (response.ok) {
+            await updateSidebar(); // Update sidebar immediately after saving
+        }
     } catch (err) {
-        console.warn("Could not save to history.");
+        console.warn("Database Error: Could not save to history.");
     }
 };
 
-// 8. PHP Integration: جلب السجل للقائمة الجانبية
+// 8. PHP Integration: Fetch history and display Latest on Top
 const updateSidebar = async () => {
     try {
         const response = await fetch('api/get_history.php');
@@ -230,27 +240,34 @@ const updateSidebar = async () => {
         const sidebarContainer = document.getElementById('saved-cities');
         
         if (sidebarContainer && history && history.length > 0) {
-            sidebarContainer.innerHTML = history.map(item => `
+            // Reverse the array so the most recently saved city appears at the top
+            const latestHistory = history.reverse();
+
+            sidebarContainer.innerHTML = latestHistory.map(item => `
                 <div class="saved-city" onclick="fetchWeatherData('${item.city_name}')">
                     ${item.city_name}
                 </div>
             `).join('');
         }
     } catch (error) {
-        console.warn("Could not load history. Make sure PHP is running.");
+        console.warn("UI Error: Could not refresh sidebar. Make sure PHP is running.");
     }
 };
 
+// =========================================================
 // 10. Dark/Light Mode Toggle Logic
+// =========================================================
 const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
 
+// Check Local Storage for previous theme preference
 const currentTheme = localStorage.getItem('theme');
 if (currentTheme === 'light') {
     body.classList.add('light-mode');
     themeToggle.innerHTML = '🌙 Dark Mode';
 }
 
+// Toggle logic on button click
 themeToggle.addEventListener('click', () => {
     body.classList.toggle('light-mode');
     
@@ -263,4 +280,5 @@ themeToggle.addEventListener('click', () => {
     }
 });
 
+// 9. Load history when the page first opens
 window.onload = updateSidebar;
