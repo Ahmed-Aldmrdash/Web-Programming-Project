@@ -1,7 +1,7 @@
 <?php
 include 'db.php';
 
-// بنجيب أحدث 10 مدن تم البحث عنهم
+// We bring you the 10 most recently searched cities
 $result = $conn->query("SELECT city_name FROM search_history ORDER BY id DESC LIMIT 10");
 $cities = array();
 while ($row = $result->fetch_assoc()) {

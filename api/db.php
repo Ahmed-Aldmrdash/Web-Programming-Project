@@ -1,7 +1,7 @@
 <?php
 $host = "localhost";
 $user = "root";
-$pass = ""; // الباسورد الافتراضي في XAMPP بيكون فاضي
+$pass = ""; // The default password in XAMPP is empty
 $dbname = "weather_app";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
