@@ -2,9 +2,6 @@
  * =========================================================
  * Modern Weather Dashboard - Core Stylesheet
  * Project: SUT 2026
- * Author: Ahmed Aldmrdash (Team Leader & UI/UX Engineer)
- * 
- * Note to the team (Omar & Shimaa): 
  * I designed this stylesheet using modern CSS techniques 
  * like CSS Variables, Grid Layout, and Glassmorphism. 
  * This ensures our project looks professional and enterprise-ready.
@@ -342,7 +339,7 @@ button[type="submit"]:hover {
 /*
  * =========================================================
  * Light Mode Overrides
- * When Omar's JS adds the 'light-mode' class to the body, 
+ * When JS adds the 'light-mode' class to the body, 
  * these variables replace the default dark ones.
  * =========================================================
  */

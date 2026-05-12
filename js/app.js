@@ -1,15 +1,11 @@
 /*
  * =========================================================
  * Modern Weather Dashboard - Core JavaScript Logic
- * Project: SUT 2026
- * Author: Ahmed Aldmrdash (Team Leader & AI Engineer)
- * 
+ * Project: SUT 2026 
  * Description: I designed this architecture to handle external API
  * requests (OpenWeatherMap & Nominatim), manage the DOM state, 
  * integrate Leaflet.js maps, and sync with our PHP backend.
- * 
- * Note to team: Omar, handle the DOM updates carefully. 
- * Shimaa, ensure the backend API endpoints remain secure.
+
  * =========================================================
  */
 
